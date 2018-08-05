@@ -16,13 +16,22 @@ app.use(express.static(publicPath));
 io.on('connection',(socket)=>{
   console.log('Novi korisnik se prikljucio');
   // console.log(socket);
+  
+  socket.emit('newMsg', {
+    from:'mike@example.com',
+    text:'S"ima ',
+    createAt: 123
+  });
+
+  socket.on("createMessage", (newMsg)=>{
+    console.log('Create message and send it!',newMsg);
+  });
+
   socket.on("disconnect",()=>{
     console.log('Korisnik je izasao');
   });
 });
-// io.on('disconnection',()=>{
-//   console.log('Korisnik je izasao');
-// });
+
 // app.get("/", middleware, (req,res)=>{
 //     var porukica = req.novDeo;
 //     console.log(porukica);

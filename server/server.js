@@ -15,16 +15,24 @@ app.use(express.static(publicPath));
 
 io.on('connection',(socket)=>{
   console.log('Novi korisnik se prikljucio');
-  // console.log(socket);
   
-  socket.emit('newMsg', {
-    from:'mike@example.com',
-    text:'S"ima ',
-    createAt: 123
-  });
+  // SOCKET.EMIT EMIUJE DOGADJAJ SAMO UOKVIRU JEDNE KONEKCIJE
+  // IO.EMIT EMTIJE DOGADJAJ KA SVIM MOGUCIM KONEKCIJAMA
+
+  
+  // socket.emit('newMessage', {
+  //   from:'mike@example.com',
+  //   text:'S"ima ',
+  //   createAt: 123
+  // });
 
   socket.on("createMessage", (newMsg)=>{
     console.log('Create message and send it!',newMsg);
+    io.emit('newMessage',{
+      from:newMsg.from,
+      text:newMsg.text,
+      createdAt: new Date().getTime()
+    });
   });
 
   socket.on("disconnect",()=>{

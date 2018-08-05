@@ -13,12 +13,5 @@ socket.on('disconnect',function(){
 });
 
 socket.on('newMessage', function(message){
-    console.log('New message! ',message);
-});
-socket.on('welcome', function(message){
-    console.log(message.from);
-    console.log(message.text);
-});
-socket.on('userConnected', function(message){
-    console.log(message);
+    console.log(`User connected from ${message.from}, message ${message.text}.`);
 });

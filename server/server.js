@@ -36,7 +36,8 @@ io.on('connection',(socket)=>{
 
   socket.broadcast.emit('newMessage', {
     from:'Admin',
-    text:'Neki user se konektovao'
+    text:'Neki user se konektovao',
+    createdAt: new Date().getTime()
   });
   
   socket.on("createMessage", (newMsg)=>{

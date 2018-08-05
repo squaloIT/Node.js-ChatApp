@@ -26,7 +26,7 @@ io.on('connection',(socket)=>{
   //   createAt: 123
   // });
 
-  socket.emit('welcome', {
+  socket.emit('newMessage', {
       from:'Admin',
       text:'Welcome to our chat app.', 
       createdAt: new Date().getTime()
@@ -34,17 +34,18 @@ io.on('connection',(socket)=>{
 
   // SOCKET.BROADCAST.EMIT EMITUJE DOGADJAJ ZA SVE PRETPLACENJE OSIM ONOME KO EMITUJE TAJ DOGADJAJ.
 
-  socket.broadcast.emit('userConnected', {
+  socket.broadcast.emit('newMessage', {
+    from:'Admin',
     text:'Neki user se konektovao'
   });
   
   socket.on("createMessage", (newMsg)=>{
     console.log('Create message and send it!',newMsg);
-    io.emit('newMessage',{
-      from:newMsg.from,
-      text:newMsg.text,
-      createdAt: new Date().getTime()
-    });
+    // io.emit('newMessage',{
+    //   from:newMsg.from,
+    //   text:newMsg.text,
+    //   createdAt: new Date().getTime()
+    // });
   });
 
   socket.on("disconnect",()=>{

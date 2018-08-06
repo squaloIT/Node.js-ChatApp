@@ -13,7 +13,19 @@
     </head>
     
     <body>
-        
+        <div id="chatWindow">
+					<div class="messageWrapper">
+						<p class='myMessage'>Moja poruka.</p>
+					</div>
+					<div class="messageWrapper">
+						<p class='othersMessage'>Username1: Necija tudja poruka. Necija tudja poruk</p>
+					</div>
+					
+					<form action="#" method="post">
+						<input type="text" id="tbMessage" placeholder="Something..."/>
+						<input type="button" id='btnSendMessage' value="Send"/>
+					</form>
+				</div>
         <div class="wrapper">
 			<div class="box">
 				<div class="row row-offcanvas row-offcanvas-left">
@@ -307,8 +319,8 @@
 		  </div>
 		</div>
         
-        <script type="text/javascript" src="assets/js/jquery.js"></script>
-				<script type="text/javascript" src="assets/js/bootstrap.js"></script>
+        <script type="text/javascript" src="assets/js/libs/jquery.js"></script>
+				<script type="text/javascript" src="assets/js/libs/bootstrap.js"></script>
 				<script src='/socket.io/socket.io.js'></script>
         <script src='assets/js/index.js'></script>
         <script type="text/javascript">

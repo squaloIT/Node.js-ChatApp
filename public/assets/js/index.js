@@ -1,7 +1,5 @@
 var socket = io();
 socket.on('connect', function(){
-    console.log('Konektovan na server');
-
     // socket.emit("createMessage",{
     //     from:'Pera@gmail.com',
           //  to:'cofiZmaj'
@@ -14,4 +12,10 @@ socket.on('disconnect',function(){
 
 socket.on('newMessage', function(message){
     console.log(`User connected from ${message.from}, message ${message.text}.`);
+});
+socket.emit('createMessage', {
+	from:'Andrijana Petakovic',
+	text:'Jebem te u dupe.'
+}, function(){
+	console.log("Acknowledgement");
 });

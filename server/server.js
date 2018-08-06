@@ -5,6 +5,7 @@ const socketIO = require("socket.io");
 
 const port = process.env.PORT || 3000;
 const publicPath = path.join(__dirname, "../public");
+const {generateMessage} = require("./utils/message");
 
 var app = express();
 var serverHTTP = http.createServer(app);
@@ -26,22 +27,16 @@ io.on('connection',(socket)=>{
   //   createAt: 123
   // });
 
-  socket.emit('newMessage', {
-      from:'Admin',
-      text:'Welcome to our chat app.', 
-      createdAt: new Date().getTime()
-    });
+  socket.emit('newMessage', generateMessage('Admin', 'Welcome to our chat app.'));
 
   // SOCKET.BROADCAST.EMIT EMITUJE DOGADJAJ ZA SVE PRETPLACENJE OSIM ONOME KO EMITUJE TAJ DOGADJAJ.
 
-  socket.broadcast.emit('newMessage', {
-    from:'Admin',
-    text:'Neki user se konektovao',
-    createdAt: new Date().getTime()
-  });
+  socket.broadcast.emit('newMessage', generateMessage('Admin', 'Novi user se konektovao'));
   
-  socket.on("createMessage", (newMsg)=>{
+  socket.on("createMessage", (newMsg, callback)=>{
     console.log('Create message and send it!',newMsg);
+    io.emit('newMessage',generateMessage(newMsg.from, newMsg.text));
+    callback();
     // io.emit('newMessage',{
     //   from:newMsg.from,
     //   text:newMsg.text,

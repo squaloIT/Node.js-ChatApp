@@ -279,7 +279,10 @@ small.text-muted {
   display:inline-block;
   float:left;
 }
-
+#chatWindow .messageWrapper .othersMessage a {
+  color:#FFF;
+  font-style: oblique;
+}
 #chatWindow .messageWrapper{
   width:100%;
   min-height:35px;

@@ -35,3 +35,33 @@ $("#btnSendMessage").click(function(e){
         </div>`);
     });
 });
+var locationButton = $("#btnGeolocation");
+locationButton.click(function(){
+    if(!navigator.geolocation){
+        return alert("Geolocation is not supported");
+    }
+
+    navigator.geolocation.getCurrentPosition(function(position){
+        console.log(position.coords);
+        socket.emit("createLocationMessage", {
+					latitude: position.coords.latitude,
+					longitude: position.coords.longitude
+        }, function(){
+
+				});
+    }, function(){
+        alert("Niste dali lokaciju");
+    });
+});
+socket.on('newLocationMessage', function(message){
+	console.log(message);
+	var div = $("<div class='messageWrapper'></div>");
+	var p = $("<p class='othersMessage'></p>");
+	var a = $("<a target='_blank'> My current location</a>");
+
+	p.text(`${message.from}: `);
+	a.attr("href", message.url);
+	p.append(a);
+	div.append(p);
+	$('#chatWindow').append(div);
+});

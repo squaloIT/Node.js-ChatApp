@@ -11,10 +11,11 @@ socket.on('disconnect',function(){
 });
 
 socket.on('newMessage', function(message){
-    // console.log(`User connected from ${message.from}, message ${message.text}.`);
+    
+    var formattedTime = moment(message.createdAt).format('h:mm a');
     $("#chatWindow").append(`
         <div class="messageWrapper">
-            <p class='othersMessage'>${message.from}: ${message.text}.</p>
+            <p class='othersMessage'>${message.from} ${formattedTime}: ${message.text}.</p>
         </div>`);
 });
 // socket.emit('createMessage', {
@@ -30,9 +31,10 @@ $("#btnSendMessage").click(function(e){
         from:'User',
         text: tbMessageSelector.val()
     }, function(message){
+        console.log(message);
         $("#chatWindow").append(`
         <div class="messageWrapper">
-            <p class='myMessage'>${message}.</p>
+            <p class='myMessage'>${moment(message.createdAt).format("h:mm a")} ${message.text}.</p>
         </div>`);
         tbMessageSelector.val('');
     });
@@ -61,12 +63,13 @@ locationButton.click(function(){
     
 });
 socket.on('newLocationMessage', function(message){
-	console.log(message);
+	
 	var div = $("<div class='messageWrapper'></div>");
 	var p = $("<p class='othersMessage'></p>");
-	var a = $("<a target='_blank'> My current location</a>");
+    var a = $("<a target='_blank'> My current location</a>");
+    var formattedTime = moment(message.createdAt).format("h:mm a");
 
-	p.text(`${message.from}: `);
+	p.text(`${message.from} ${formattedTime}: `);
 	a.attr("href", message.url);
 	p.append(a);
 	div.append(p);

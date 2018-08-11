@@ -27,10 +27,10 @@ io.on('connection',(socket)=>{
   // socket.broadcast.emit('newMessage', generateMessage('Admin', 'Novi user se konektovao'));
   
   socket.on("createMessage", (newMsg, callback)=>{
-    console.log('Create message and send it!',newMsg);
+    
     // io.emit('newMessage',generateMessage(newMsg.from, newMsg.text));
     socket.broadcast.emit('newMessage',generateMessage(newMsg.from, newMsg.text));
-    callback(newMsg.text);
+    callback(newMsg);
   
   });
   socket.on('createLocationMessage', (coords, callback)=>{

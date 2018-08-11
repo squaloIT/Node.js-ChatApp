@@ -34,8 +34,12 @@ io.on('connection',(socket)=>{
   
   });
   socket.on('createLocationMessage', (coords, callback)=>{
-    socket.broadcast.emit('newLocationMessage',generateLocationMessage('Perica', coords.latitude, coords.longitude));
-    
+   // console.log(coords);
+    var locationMsgObj = generateLocationMessage('Perica', coords.latitude, coords.longitude);
+    console.log(locationMsgObj);
+    //socket.broadcast.emit('newLocationMessage',locationMsgObj); TREBA OVAKO ALI SI GLUP PA ONO DOLE
+    io.emit('newLocationMessage',locationMsgObj);
+    callback();
   });
   socket.on("disconnect",()=>{
     console.log('Korisnik je izasao');

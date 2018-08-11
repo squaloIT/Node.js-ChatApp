@@ -25,14 +25,16 @@ socket.on('newMessage', function(message){
 // });
 
 $("#btnSendMessage").click(function(e){
+    var tbMessageSelector = $("#tbMessage");
     socket.emit('createMessage',{
         from:'User',
-        text: $("#tbMessage").val()
+        text: tbMessageSelector.val()
     }, function(message){
         $("#chatWindow").append(`
         <div class="messageWrapper">
             <p class='myMessage'>${message}.</p>
         </div>`);
+        tbMessageSelector.val('');
     });
 });
 var locationButton = $("#btnGeolocation");
@@ -41,17 +43,22 @@ locationButton.click(function(){
         return alert("Geolocation is not supported");
     }
 
+    locationButton.attr("disabled","disabled");
+    locationButton.val("Sending location...");
+
     navigator.geolocation.getCurrentPosition(function(position){
         console.log(position.coords);
         socket.emit("createLocationMessage", {
-					latitude: position.coords.latitude,
-					longitude: position.coords.longitude
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
         }, function(){
-
-				});
-    }, function(){
-        alert("Niste dali lokaciju");
+            locationButton.removeAttr("disabled").val("Send location");
+		});
+    }, function(err){
+        locationButton.removeAttr("disabled").val("Send location");
+        console.log(err);
     });
+    
 });
 socket.on('newLocationMessage', function(message){
 	console.log(message);

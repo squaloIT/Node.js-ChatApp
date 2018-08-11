@@ -319,7 +319,23 @@
 		  </div>
 		  </div>
 		</div>
+				<script id="my-message-template" type="text/template">
+					<div class="messageWrapper">
+							<p class='myMessage'>{{formattedCreatedAt}}: {{text}}</p>
+					</div>
+				</script>
+				<script id="others-message-template" type="text/template">
+					<div class="messageWrapper">
+							<p class='othersMessage'><b>{{from}}</b> {{formattedCreatedAt}}: {{text}}</p>
+					</div>
+				</script>
+				<script id="location-message-template" type="text/template">
+					<div class="messageWrapper">
+							<p class='othersMessage'><b>{{from}}</b> {{formattedCreatedAt}}: {{text}}<a href='{{url}}' target='_blank'>My current location</a></p>
+					</div>
+				</script>
 				<script type="text/javascript" src="assets/js/libs/moment.js"></script>
+				<script type="text/javascript" src="assets/js/libs/mustache.js"></script>
         <script type="text/javascript" src="assets/js/libs/jquery.js"></script>
 				<script type="text/javascript" src="assets/js/libs/bootstrap.js"></script>
 				<script src='/socket.io/socket.io.js'></script>

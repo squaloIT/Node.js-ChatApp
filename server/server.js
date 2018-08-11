@@ -36,7 +36,6 @@ io.on('connection',(socket)=>{
   socket.on('createLocationMessage', (coords, callback)=>{
    // console.log(coords);
     var locationMsgObj = generateLocationMessage('Perica', coords.latitude, coords.longitude);
-    console.log(locationMsgObj);
     //socket.broadcast.emit('newLocationMessage',locationMsgObj); TREBA OVAKO ALI SI GLUP PA ONO DOLE
     io.emit('newLocationMessage',locationMsgObj);
     callback();

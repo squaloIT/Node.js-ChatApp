@@ -1,29 +1,27 @@
 var socket = io();
-socket.on('connect', function(){
-    // socket.emit("createMessage",{
-    //     from:'Pera@gmail.com',
-          //  to:'cofiZmaj'
-    //     text:"Cao cao"
-    // });
-});
-socket.on('disconnect',function(){
-    console.log('Server se iskljucio sa soketa.');
-});
+
+// socket.on('disconnect',function(){
+//     console.log('Server se iskljucio sa soketa.');
+// });
+var othersMessageTemplate = $("#others-message-template").html();
+var myMessageTemplate = $("#my-message-template").html(); 
+var locationMessageTemplate = $("#location-message-template").html(); 
 
 socket.on('newMessage', function(message){
     
-    var formattedTime = moment(message.createdAt).format('h:mm a');
-    $("#chatWindow").append(`
-        <div class="messageWrapper">
-            <p class='othersMessage'>${message.from} ${formattedTime}: ${message.text}.</p>
-        </div>`);
+    var formattedCreatedAt = moment(message.createdAt).format('h:mm a');
+    // $("#chatWindow").append(`
+    //     <div class="messageWrapper">
+    //         <p class='othersMessage'>${message.from} ${formattedTime}: ${message.text}.</p>
+    //     </div>`);
+    console
+    var html = Mustache.render(othersMessageTemplate, {
+        from: message.from,
+        formattedCreatedAt,
+        text: message.text
+    });
+    $("#chatWindow").append(html);
 });
-// socket.emit('createMessage', {
-// 	from:'Andrijana Petakovic',
-// 	text:'Jebem te u dupe.'
-// }, function(){
-// 	console.log("Acknowledgement");
-// });
 
 $("#btnSendMessage").click(function(e){
     var tbMessageSelector = $("#tbMessage");
@@ -31,12 +29,19 @@ $("#btnSendMessage").click(function(e){
         from:'User',
         text: tbMessageSelector.val()
     }, function(message){
-        console.log(message);
-        $("#chatWindow").append(`
-        <div class="messageWrapper">
-            <p class='myMessage'>${moment(message.createdAt).format("h:mm a")} ${message.text}.</p>
-        </div>`);
+        
+        // $("#chatWindow").append(`
+        // <div class="messageWrapper">
+        //     <p class='myMessage'>${moment(message.createdAt).format("h:mm a")} ${message.text}.</p>
+        // </div>`);
+        console.log(moment(message.createdAt).format("h:mm a"));
+        var html = Mustache.render(myMessageTemplate, {
+            formattedCreatedAt: moment(message.createdAt).format("h:mm a"),
+            text: message.text
+        });
+        $("#chatWindow").append(html);
         tbMessageSelector.val('');
+
     });
 });
 var locationButton = $("#btnGeolocation");
@@ -63,15 +68,13 @@ locationButton.click(function(){
     
 });
 socket.on('newLocationMessage', function(message){
-	
-	var div = $("<div class='messageWrapper'></div>");
-	var p = $("<p class='othersMessage'></p>");
-    var a = $("<a target='_blank'> My current location</a>");
-    var formattedTime = moment(message.createdAt).format("h:mm a");
 
-	p.text(`${message.from} ${formattedTime}: `);
-	a.attr("href", message.url);
-	p.append(a);
-	div.append(p);
-	$('#chatWindow').append(div);
+    var formattedTime = moment(message.createdAt).format("h:mm a");
+    var html = Mustache.render(locationMessageTemplate, {
+        from: message.from,
+        formattedCreatedAt: formattedTime,
+        text: message.text,
+        url: message.url
+    });
+    $('#chatWindow').append(html);
 });

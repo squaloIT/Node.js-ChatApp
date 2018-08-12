@@ -238,31 +238,36 @@ small.text-muted {
 /* ******************** MOJ CSS ******************** */
 
 #chatWindow {
-  width:350px;
-  height:400px;
+  width:450px;
+  height:550px;
   border:1px solid #222;
   background-color: #e9eaed;
   position:fixed;
   right:100px;
   bottom:0px;
   z-index:100;
-  padding-bottom:30px;
+  padding-bottom:40px;
   overflow: scroll;
 }
 #chatWindow #tbMessage {
   position: fixed;
-  right:185px;
+  right:285px;
   bottom:25px;
   width:262px;
-  height:30px;
+  height:40px;
 }
-#chatWindow #btnSendMessage {
+#chatWindow .btnSend {
   position: fixed;
-  right:125px;
   bottom:25px;
   width:60px;
-  height:30px;
-
+  height:40px;
+}
+#chatWindow #btnSendMessage {
+  right:225px;
+}
+#chatWindow #btnGeolocation {
+  right:125px;
+  width:100px;
 }
 
 #chatWindow .messageWrapper .myMessage{
@@ -288,6 +293,7 @@ small.text-muted {
 #chatWindow .messageWrapper{
   width:100%;
   min-height:50px;
+  word-wrap: break-word;
   display:block;
 }
 /* adjust the contents on smaller devices */

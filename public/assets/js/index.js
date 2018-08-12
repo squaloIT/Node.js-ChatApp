@@ -1,12 +1,24 @@
 var socket = io();
-
-// socket.on('disconnect',function(){
-//     console.log('Server se iskljucio sa soketa.');
-// });
 var othersMessageTemplate = $("#others-message-template").html();
 var myMessageTemplate = $("#my-message-template").html(); 
 var locationMessageTemplate = $("#location-message-template").html(); 
 
+function scrollToBottom(){
+    var chatWindow = $("#chatWindow");
+    var newMessage = chatWindow.children('.messageWrapper:last-child');
+
+    var scrollTop = chatWindow.prop('scrollTop');
+    var scrollHeight = chatWindow.prop('scrollHeight');
+    var clientHeight = chatWindow.prop('clientHeight');
+    var newMessageHeight = newMessage.innerHeight();
+    var lastMessageHeight = newMessage.prev().innerHeight();
+
+    if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight){
+        // console.log("Should scroll");
+        chatWindow.scrollTop(scrollHeight);
+    }
+}
+//GORNJA FUNKCIJA NAM OMOGUCAVA DA AUTOSKROLUJEMO KORISNIKA KA POSLEDNJOJ PORUCI, DA NE MORA ON DA SKROLUJE NON STOP
 socket.on('newMessage', function(message){
     
     var formattedCreatedAt = moment(message.createdAt).format('h:mm a');
@@ -21,6 +33,7 @@ socket.on('newMessage', function(message){
         text: message.text
     });
     $("#chatWindow").append(html);
+  
 });
 
 $("#btnSendMessage").click(function(e){
@@ -41,7 +54,7 @@ $("#btnSendMessage").click(function(e){
         });
         $("#chatWindow").append(html);
         tbMessageSelector.val('');
-
+        scrollToBottom();
     });
 });
 var locationButton = $("#btnGeolocation");
@@ -77,4 +90,5 @@ socket.on('newLocationMessage', function(message){
         url: message.url
     });
     $('#chatWindow').append(html);
+    scrollToBottom();
 });

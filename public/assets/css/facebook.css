@@ -243,7 +243,7 @@ small.text-muted {
   border:1px solid #222;
   background-color: #e9eaed;
   position:fixed;
-  right:100px;
+  right:50px;
   bottom:0px;
   z-index:100;
   padding-bottom:40px;
@@ -251,7 +251,7 @@ small.text-muted {
 }
 #chatWindow #tbMessage {
   position: fixed;
-  right:285px;
+  right:235px;
   bottom:25px;
   width:262px;
   height:40px;
@@ -263,10 +263,10 @@ small.text-muted {
   height:40px;
 }
 #chatWindow #btnSendMessage {
-  right:225px;
+  right:175px;
 }
 #chatWindow #btnGeolocation {
-  right:125px;
+  right:75px;
   width:100px;
 }
 

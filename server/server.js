@@ -2,6 +2,13 @@ const path = require("path");
 const express = require("express");
 const http = require("http");
 const socketIO = require("socket.io");
+const {ObjectID} = require('mongodb');
+var moment = require("moment");
+const _ = require("lodash");
+var {User} = require("./models/user");
+var {mongoose} = require('./db/mongoose');
+
+var bodyParser = require('body-parser')
 
 const port = process.env.PORT || 3000;
 const publicPath = path.join(__dirname, "../public");
@@ -10,9 +17,59 @@ const {generateMessage, generateLocationMessage} = require("./utils/message");
 var app = express();
 var serverHTTP = http.createServer(app);
 var io = socketIO(serverHTTP);
-var middleware = require('./middleware/middleware');
+var authenticate = require('./middleware/middleware');
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
+app.get("/", (req,res) => {
+  
+  console.log("Usao u GET /");
+
+  res.sendFile(publicPath+'/index.html');
+});
+
+app.get("/populate", (req,res)=>{
+
+  var newUser = {
+    _id: new ObjectID(),
+    email:"ajqla94@gmail.com",
+    password:"aleksa007",
+    registeredAt: moment().valueOf(),
+    tokens:[{
+      token:"token",
+      access:"auth"
+    }]
+  };
+
+  User(newUser).save().then((user)=>{
+    console.log(JSON.stringify(user,undefined, 2));
+    res.send();
+  }).catch((err)=>{
+    console.log("Greska Prilikom cuvanja novog korisnika. ",err);
+  });
+
+});
 
 app.use(express.static(publicPath));
+
+app.post("/login", authenticate, (req,res)=>{
+  
+  var pickedBodyData = _.pick(req.body, ["tbEmail", "tbPassword", "novDeo"]);
+  console.log(JSON.stringify(pickedBodyData,undefined, 2));
+
+  var staJe = User.findByCredentials(pickedBodyData.tbEmail, pickedBodyData.tbPassword)
+  .then((user)=>{
+    console.log(JSON.stringify(user,undefined, 2));
+  }).catch((error)=>{
+     console.log(error);
+  });
+  console.log("Tip onoga sto vraca User.findByCredentials", typeof staJe);
+  console.log("Rezultat onoga sto vraca", staJe);
+  res.send();  
+});
 
 io.on('connection',(socket)=>{
   console.log('Novi korisnik se prikljucio');
@@ -45,11 +102,6 @@ io.on('connection',(socket)=>{
   });
 });
 
-// app.get("/", middleware, (req,res)=>{
-//     var porukica = req.novDeo;
-//     console.log(porukica);
-//     res.sendFile(publicPath+'/index.html');
-// });
 
 serverHTTP.listen(port, () => {
   console.log(`Started up at port ${port}`);

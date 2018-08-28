@@ -1,4 +1,5 @@
 var {mongoose} = require('./../db/mongoose');
+const jwt = require('jsonwebtoken');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 
@@ -35,39 +36,60 @@ var UserSchema = new mongoose.Schema({
       }]
 });
 
+UserSchema.methods.generateAuthToken = function() {
+    var user = this;
+    var access = "auth";
+    var token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET);
+
+    user.tokens = user.tokens.concat([{access,token}]);
+    return user.save().then(()=>{
+        return token;
+    });
+};
+
+UserSchema.statics.findByToken = function(token){
+    var User = this;
+    var decoded;
+
+    try {
+        decoded = jwt.decode(token, process.env.JWT_SECRET);
+    } catch(e){
+        return Promise.reject();
+    }
+
+    return User.findOne({
+        '_id': decoded._id,
+        'tokens.token': token,
+        'tokens.access':'auth'
+    });
+};
+
 UserSchema.statics.findByCredentials = function (email, password) {
     var User = this;
-    var query = User.findOne({email});
-    // return Promise.resolve();
-
-    console.log("Da li je query promise:",query instanceof Promise);
-    var promise = query.exec();
-
-    console.log("Da li je query.exec() promise:", promise instanceof Promise);
-    return promise.then((user)=>{
+    // var query = User.findOne({email});
+    // // return Promise.resolve();
+    // var promise = query.exec();
+    return User.findOne({email}).then((user)=>{
+       
         if(!user){
-            console.log("Nije pronadjen user sa tim email-om.");
-            return Promise.reject();
+            return Promise.reject("Nije pronadjen user sa tim email-om.");
         }
-        console.log("User nije jednak false i prelazimo na return novog promise-a()");
-
-        // Use bcrypt.compare to compare password and user.password
-        bcrypt.compare(password, user.password, (err, res) => {
-            console.log("rezultat rada bcrypt compare: ",res);
-            if (res) {
-                return Promise.resolve(user);
-            } else {
-                return Promise.reject();
-            }
-        });
+       
+        return new Promise((resolve, reject) => {
+            // Use bcrypt.compare to compare password and user.password
+            bcrypt.compare(password, user.password, (err, res) => {
+              if (res) {
+                resolve(user);
+              } else {
+                reject();
+              }
+            });
+          });
         
     }, (err)=>{ 
-        console.log("Nije pronadjen korisnik sa tim email-om",err);
-        return Promise.reject(err);
-        
+        return Promise.reject(`Nije pronadjen korisnik sa tim email-om ${err}`);
     }).catch((err)=>{
-        console.log("Nije pronadjen korisnik sa tim email-om i usli smo u catch",err);
-        return Promise.reject(err);
+        return Promise.reject(`Nije pronadjen korisnik sa tim email-om i usli smo u catch ${err}`);
     });
 };
 
